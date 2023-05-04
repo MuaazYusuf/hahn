@@ -1,0 +1,29 @@
+# Build output
+**/bin
+**/obj
+
+# Visual Studio files
+.vs/
+*.suo
+*.user
+*.ncrunch*
+*.sln.docstates
+
+# Visual Studio Code files
+.vscode/
+*.vscode/
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# NuGet packages
+*.nuget.props
+*.nuget.targets
+*.nuget.cache
+
+# Other files
+*.log
+*.swp
+.DS_Store
+Thumbs.db
