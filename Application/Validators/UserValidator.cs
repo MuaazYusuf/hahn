@@ -1,12 +1,12 @@
-using Domain.Users.Interfaces;
 using FluentValidation;
-
+using Domain.Users.Entities;
+using Application.Base;
 namespace Domain.Users.Validators
 {
     public class UserValidator : AbstractValidator<User>
     {
-        private readonly IUserValidator _userValidator;
-        public UserValidator(IUserValidator userValidator)
+        private readonly IBaseValidator<User> _userValidator;
+        public UserValidator(IBaseValidator<User> userValidator)
         {
             _userValidator = userValidator;
         }
