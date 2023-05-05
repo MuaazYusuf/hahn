@@ -1,5 +1,6 @@
 using Domain.Base;
 using Microsoft.EntityFrameworkCore;
+using System.Threading.Tasks;
 
 
 namespace Infrastructure.Data.Repositories
@@ -38,10 +39,15 @@ namespace Infrastructure.Data.Repositories
             return entity;
         }
 
-        public async Task<int> DeleteAsync(TEntity entity)
+        public async Task<int> DeleteAsync(TId id)
         {
-            entities.Remove(entity);
-            return await _context.SaveChangesAsync();
+            var user = await GetByIdAsync(id);
+            if (user != null)
+            {
+                entities.Remove(user);
+                return await _context.SaveChangesAsync();
+            }
+            return 0;
         }
     }
 }
