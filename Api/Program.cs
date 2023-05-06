@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Domain.Base;
 using Domain.Users.Interfaces;
 using Application.Services.Users;
+using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,21 +20,43 @@ builder.Services.AddControllers();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(options =>
+              {
+                  options.SwaggerDoc("v1", new OpenApiInfo()
+                  {
+                      Title = "Hahn APIs",
+                      Version = "V1",
+                      Description = "Api",
+                  });
+              });
+builder.Services.AddCors(o => o.AddPolicy("default", builder =>
+            {
+                builder.AllowAnyOrigin()
+                       .AllowAnyMethod()
+                       .AllowAnyHeader();
+            }));
 
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
+    System.Console.Write("asdqwdq");
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "API v1"));
 }
+
+app.UseCors("default");
 
 app.UseHttpsRedirection();
 
+app.UseRouting();
+
 app.UseAuthorization();
 
-app.MapControllers();
+app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers();
+            });
 
 app.Run();

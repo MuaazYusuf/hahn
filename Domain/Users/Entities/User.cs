@@ -11,6 +11,6 @@ namespace Domain.Users.Entities
         public string LastName { get; set; }
         public DateTime DateOfBirth { get; set; }
         public string PhoneNumber { get; set; }
-        public bool IsActive { get; set; }
+        public bool IsActive { get; set; } = false;
     }
 }
