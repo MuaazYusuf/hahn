@@ -5,16 +5,16 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Data.Repositories.Users
 {
-    public class UserRepository : AsyncRepository<User, int> , IUserRepository
+    public class UserRepository : AsyncBaseRepository<User, int>, IUserRepository
     {
-        public UserRepository(EFContext context) : base(context){}
+        public UserRepository(EFContext context) : base(context) { }
 
-        public async Task<User?> GetByUsernameAsync(string username) 
+        public async Task<User?> GetByUsernameAsync(string username)
         {
             return await entities.FirstOrDefaultAsync(user => user.Username == username);
         }
 
-        public async Task<User?> GetByEmailAsync(string email) 
+        public async Task<User?> GetByEmailAsync(string email)
         {
             return await entities.FirstOrDefaultAsync(user => user.Email == email);
         }

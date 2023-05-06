@@ -1,5 +1,6 @@
 using Domain.Users.Entities;
 using Domain.Users.Interfaces;
+
 namespace Application.Services.Users
 {
     public class UserService : BaseService<User, int>, IUserService

@@ -1,15 +1,16 @@
 using Domain.Base;
 using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
-
+using Microsoft.Extensions.DependencyInjection;
+using System.Reflection;
 
 namespace Infrastructure.Data.Repositories
 {
-    public class AsyncRepository<TEntity, TId> : IBaseAsyncRepository<TEntity, TId> where TEntity : BaseEntity<TId>
+    public class AsyncBaseRepository<TEntity, TId> : IBaseAsyncRepository<TEntity, TId> where TEntity : BaseEntity<TId>
     {
         protected readonly EFContext _context;
-        protected DbSet<TEntity> entities;
-        public AsyncRepository(EFContext context)
+        internal DbSet<TEntity> entities;
+        public AsyncBaseRepository(EFContext context)
         {
             _context = context;
             entities = _context.Set<TEntity>();
