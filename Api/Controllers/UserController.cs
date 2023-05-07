@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Application.Services.Users;
 using Application.DTOs.Users;
 using Domain.Users.Entities;
+using BCrypt.Net;
 
 namespace Api.Controllers
 {
@@ -46,7 +47,7 @@ namespace Api.Controllers
                 Username = request.Username,
                 FirstName = request.FirstName,
                 LastName = request.LastName,
-                Password = request.Password,
+                Password = BCrypt.HashPassword(request.Password),
                 PhoneNumber = request.PhoneNumber,
                 DateOfBirth = request.BirthDate
             };
