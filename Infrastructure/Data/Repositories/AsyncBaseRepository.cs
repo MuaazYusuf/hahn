@@ -40,15 +40,10 @@ namespace Infrastructure.Data.Repositories
             return entity;
         }
 
-        public async Task<int> DeleteAsync(TId id)
+        public async Task<int> DeleteAsync(TEntity entity)
         {
-            var user = await GetByIdAsync(id);
-            if (user != null)
-            {
-                entities.Remove(user);
-                return await _context.SaveChangesAsync();
-            }
-            return 0;
+            entities.Remove(entity);
+            return await _context.SaveChangesAsync();
         }
     }
 }

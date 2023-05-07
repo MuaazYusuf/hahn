@@ -95,5 +95,19 @@ namespace Api.Controllers
                 UpdatedAt = (DateTime)updatedUser.UpdatedAt
             });
         }
+
+        [HttpDelete("{id}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var user = await _service.GetByIdAsync(id);
+            if (user == null)
+            {
+                return NotFound();
+            }
+            await _service.DeleteAsync(user);
+            return NoContent();
+        }
     }
 }

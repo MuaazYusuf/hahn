@@ -33,9 +33,9 @@ namespace Application.Services
             return await _repository.UpdateAsync(entity);
         }
 
-        public async Task<int> DeleteAsync(TId id)
+        public async Task<int> DeleteAsync(TEntity entity)
         {
-            return await _repository.DeleteAsync(id);
+            return await _repository.DeleteAsync(entity);
         }
     }
 }

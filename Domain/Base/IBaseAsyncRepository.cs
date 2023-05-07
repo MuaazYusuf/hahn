@@ -8,7 +8,7 @@ namespace Domain.Base
 
         Task<TEntity> UpdateAsync(TEntity entity);
 
-        Task<int> DeleteAsync(TId id);
+        Task<int> DeleteAsync(TEntity entity);
 
         Task<IEnumerable<TEntity>> GetAllAsync();
     }
