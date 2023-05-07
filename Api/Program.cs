@@ -19,6 +19,7 @@ builder.Services.AddScoped(typeof(IBaseAsyncRepository<,>), typeof(AsyncBaseRepo
 
 builder.Services.AddScoped(typeof(IBaseService<,>), typeof(BaseService<,>))
                 .AddScoped<UserService>();
+builder.Services.AddTransient<IUserService, UserService>();
 builder.Services.AddControllers();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -44,7 +45,6 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    System.Console.Write("asdqwdq");
     app.UseSwagger();
     app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "API v1"));
 }
