@@ -14,5 +14,7 @@ namespace Application.DTOs.Users
 
         [JsonIgnore]
         public string Password { get; set; }
+
+        public DateTime UpdatedAt { get; set; }
     }
 }

@@ -29,6 +29,7 @@ namespace Api.Controllers
             {
                 Id = user.Id,
                 Username = user.Username,
+                FirstName = user.FirstName,
                 LastName = user.LastName,
                 DateOfBirth = user.DateOfBirth,
                 PhoneNumber = user.PhoneNumber,
@@ -57,10 +58,41 @@ namespace Api.Controllers
             {
                 Id = user.Id,
                 Username = user.Username,
+                FirstName = request.FirstName,
                 LastName = user.LastName,
                 DateOfBirth = user.DateOfBirth,
                 PhoneNumber = user.PhoneNumber,
                 IsActive = user.IsActive
+            });
+        }
+
+        [HttpPut("{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(UserResponse))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> Update(int id, [FromBody] UpdateUserRequest request)
+        {
+            var user = await _service.GetByIdAsync(id);
+            if (user == null)
+            {
+                return NotFound();
+            }
+            user.FirstName = request.FirstName;
+            user.LastName = request.LastName;
+            user.PhoneNumber = request.PhoneNumber;
+            user.DateOfBirth = request.BirthDate;
+            user.UpdatedAt = DateTime.Now;
+            var updatedUser = await _service.UpdateAsync(user);
+            return Ok(new UserResponse()
+            {
+                Id = updatedUser.Id,
+                Username = updatedUser.Username,
+                FirstName = request.FirstName,
+                LastName = updatedUser.LastName,
+                DateOfBirth = updatedUser.DateOfBirth,
+                PhoneNumber = updatedUser.PhoneNumber,
+                IsActive = updatedUser.IsActive,
+                UpdatedAt = (DateTime)updatedUser.UpdatedAt
             });
         }
     }
