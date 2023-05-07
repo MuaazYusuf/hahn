@@ -9,10 +9,10 @@ namespace Api.Controllers
     [Route(ApiConstants.EndPoint + ApiConstants.UsersRoute)]
     public class UserController : ControllerBase
     {
-        private readonly UserService _service;
+        private readonly IUserService _service;
         private readonly ILogger<UserController> _logger;
         public UserController(ILogger<UserController> logger
-            , UserService service)
+            , IUserService service)
         {
             _service = service;
             _logger = logger;
@@ -24,6 +24,9 @@ namespace Api.Controllers
         public async Task<IActionResult> GetById(int id)
         {
             var user = await _service.GetByIdAsync(id);
+            if (user == null) {
+                return NotFound();
+            }
             var mappedUser = new UserResponse(){
                 Id = user.Id,
                 Username = user.Username,
@@ -32,7 +35,7 @@ namespace Api.Controllers
                 PhoneNumber = user.PhoneNumber,
                 IsActive = user.IsActive
             };
-            return user == null ? NotFound() : Ok(mappedUser);
+            return Ok(mappedUser);
         }
 
         [HttpPost]
@@ -50,8 +53,17 @@ namespace Api.Controllers
                 PhoneNumber = request.PhoneNumber,
                 DateOfBirth = request.BirthDate
             };
+            
             var user = await _service.AddAsync(entity);
-            return user == null ? NotFound() : Ok(user);
+            var mappedUser = new UserResponse(){
+                Id = user.Id,
+                Username = user.Username,
+                LastName = user.LastName,
+                DateOfBirth = user.DateOfBirth,
+                PhoneNumber = user.PhoneNumber,
+                IsActive = user.IsActive
+            };
+            return user == null ? NotFound() : Created("", mappedUser);
         }
     }
 }

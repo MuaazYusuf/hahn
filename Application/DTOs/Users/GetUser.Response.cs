@@ -1,3 +1,5 @@
+using System.Text.Json.Serialization;
+
 namespace Application.DTOs.Users
 {
     public class UserResponse
@@ -9,5 +11,8 @@ namespace Application.DTOs.Users
         public DateTime DateOfBirth { get; set; }
         public string PhoneNumber { get; set; }
         public bool IsActive { get; set; }
+
+        [JsonIgnore]
+        public string Password { get; set; }
     }
 }

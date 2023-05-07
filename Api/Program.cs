@@ -6,6 +6,8 @@ using Domain.Base;
 using Domain.Users.Interfaces;
 using Application.Services.Users;
 using Microsoft.OpenApi.Models;
+using Application.Base;
+using Application.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,7 +17,8 @@ builder.Services.AddDbContextPool<EFContext>(options => options.UseSqlServer(con
 builder.Services.AddScoped(typeof(IBaseAsyncRepository<,>), typeof(AsyncBaseRepository<,>))
                 .AddScoped<IUserRepository, UserRepository>();
 
-builder.Services.AddScoped<UserService>();
+builder.Services.AddScoped(typeof(IBaseService<,>), typeof(BaseService<,>))
+                .AddScoped<UserService>();
 builder.Services.AddControllers();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
