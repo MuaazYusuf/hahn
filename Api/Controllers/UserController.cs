@@ -24,18 +24,15 @@ namespace Api.Controllers
         public async Task<IActionResult> GetById(int id)
         {
             var user = await _service.GetByIdAsync(id);
-            if (user == null) {
-                return NotFound();
-            }
-            var mappedUser = new UserResponse(){
+            return user == null ? NotFound() : Ok(new UserResponse()
+            {
                 Id = user.Id,
                 Username = user.Username,
                 LastName = user.LastName,
                 DateOfBirth = user.DateOfBirth,
                 PhoneNumber = user.PhoneNumber,
                 IsActive = user.IsActive
-            };
-            return Ok(mappedUser);
+            });
         }
 
         [HttpPost]
@@ -53,17 +50,17 @@ namespace Api.Controllers
                 PhoneNumber = request.PhoneNumber,
                 DateOfBirth = request.BirthDate
             };
-            
+
             var user = await _service.AddAsync(entity);
-            var mappedUser = new UserResponse(){
+            return user == null ? UnprocessableEntity() : Created("", new UserResponse()
+            {
                 Id = user.Id,
                 Username = user.Username,
                 LastName = user.LastName,
                 DateOfBirth = user.DateOfBirth,
                 PhoneNumber = user.PhoneNumber,
                 IsActive = user.IsActive
-            };
-            return user == null ? NotFound() : Created("", mappedUser);
+            });
         }
     }
 }
