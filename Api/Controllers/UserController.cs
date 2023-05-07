@@ -58,7 +58,7 @@ namespace Api.Controllers
             {
                 Id = user.Id,
                 Username = user.Username,
-                FirstName = request.FirstName,
+                FirstName = user.FirstName,
                 LastName = user.LastName,
                 DateOfBirth = user.DateOfBirth,
                 PhoneNumber = user.PhoneNumber,
@@ -87,12 +87,12 @@ namespace Api.Controllers
             {
                 Id = updatedUser.Id,
                 Username = updatedUser.Username,
-                FirstName = request.FirstName,
+                FirstName = updatedUser.FirstName,
                 LastName = updatedUser.LastName,
                 DateOfBirth = updatedUser.DateOfBirth,
                 PhoneNumber = updatedUser.PhoneNumber,
                 IsActive = updatedUser.IsActive,
-                UpdatedAt = (DateTime)updatedUser.UpdatedAt
+                UpdatedAt = (DateTime?)updatedUser.UpdatedAt
             });
         }
 
@@ -108,6 +108,25 @@ namespace Api.Controllers
             }
             await _service.DeleteAsync(user);
             return NoContent();
+        }
+
+        [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<UserResponse>))]
+        public async Task<IActionResult> GetAll()
+        {
+            var users = await _service.GetAllAsync();
+            var mappedUsers = users.Select(u => new UserResponse()
+            {
+                Id = u.Id,
+                Username = u.Username,
+                FirstName = u.FirstName,
+                LastName = u.LastName,
+                DateOfBirth = u.DateOfBirth,
+                PhoneNumber = u.PhoneNumber,
+                IsActive = u.IsActive,
+                UpdatedAt = (DateTime?)u.UpdatedAt
+            });
+            return Ok(mappedUsers);
         }
     }
 }
