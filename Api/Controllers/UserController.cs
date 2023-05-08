@@ -5,7 +5,6 @@ using Domain.Users.Entities;
 using static BCrypt.Net.BCrypt;
 using Domain.Users.Validators;
 using Application.DTOs;
-using Swashbuckle.AspNetCore.Examples;
 
 namespace Api.Controllers
 {
