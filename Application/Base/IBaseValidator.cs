@@ -1,7 +1,9 @@
+using FluentValidation.Results;
+
 namespace Application.Base
 {
     public interface IBaseValidator<TEntity>
     {
-        Task<bool> ValidateAsync(TEntity entity);
+        Task<ValidationResult> ValidateAsync(TEntity entity);
     }
 }

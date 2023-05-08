@@ -4,7 +4,7 @@ namespace Application.Services.Users
 {
     public interface IUserService : IBaseService<User, int>
     {
-        protected Task<User?> GetByUsernameAsync(string username);
-        protected Task<User?> GetByEmailAsync(string email);
+        Task<User?> GetByUsernameAsync(string username);
+        Task<User?> GetByEmailAsync(string email);
     }
 }
