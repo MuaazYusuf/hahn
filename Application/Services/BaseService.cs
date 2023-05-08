@@ -13,7 +13,7 @@ namespace Application.Services
             _repository = repository;
         }
 
-        public async Task<TEntity?> GetByIdAsync(TId id)
+        public async Task<TEntity> GetByIdAsync(TId id)
         {
             var entity = await _repository.GetByIdAsync(id);
             return entity ?? throw new EntityNotFoundException($"Entity with id {id} was not found");

@@ -6,7 +6,7 @@ namespace Api.Controllers
     [ApiController]
     public class BaseController : ControllerBase
     {
-        protected string response(dynamic payload, int statusCode, string? message = null)
+        protected JsonResult response(dynamic payload, int statusCode, string? message = null)
         {
             if (message == null)
             {
@@ -32,7 +32,7 @@ namespace Api.Controllers
                 code = statusCode,
                 message = message
             };
-            return JsonConvert.SerializeObject(response);
+            return new JsonResult(response);
         }
     }
 }

@@ -4,7 +4,7 @@ namespace Application.Base
 {
     public interface IBaseService<TEntity, TId> where TEntity  : BaseEntity<TId>
     {
-        Task<TEntity?> GetByIdAsync(TId id);
+        Task<TEntity> GetByIdAsync(TId id);
         
         Task<TEntity> AddAsync(TEntity entity);
 

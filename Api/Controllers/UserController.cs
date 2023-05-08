@@ -5,6 +5,7 @@ using Domain.Users.Entities;
 using static BCrypt.Net.BCrypt;
 using Domain.Users.Validators;
 using Application.DTOs;
+using Swashbuckle.AspNetCore.Examples;
 
 namespace Api.Controllers
 {
@@ -30,15 +31,16 @@ namespace Api.Controllers
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(BaseResponse<UserResponse>))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<string> GetById(int id)
+        public async Task<JsonResult> GetById(int id)
         {
             var user = await _service.GetByIdAsync(id);
-            return user == null ? "" : this.response(new UserResponse()
+            return this.response(new UserResponse()
             {
                 Id = user.Id,
                 Username = user.Username,
                 FirstName = user.FirstName,
                 LastName = user.LastName,
+                Email = user.Email,
                 DateOfBirth = user.DateOfBirth,
                 PhoneNumber = user.PhoneNumber,
                 IsActive = user.IsActive
@@ -46,9 +48,10 @@ namespace Api.Controllers
         }
 
         [HttpPost]
+        // [SwaggerRequestExample(typeof(UserResponse))]
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(BaseResponse<UserResponse>))]
         [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
-        public async Task<string> Add([FromBody] AddUserRequest request)
+        public async Task<JsonResult> Add([FromBody] AddUserRequest request)
         {
             var entity = new User()
             {
@@ -62,12 +65,13 @@ namespace Api.Controllers
             };
             await _userValidator.ValidateAsync(entity);
             var user = await _service.AddAsync(entity);
-            return user == null ? "" : this.response(new UserResponse()
+            return this.response(new UserResponse()
             {
                 Id = user.Id,
                 Username = user.Username,
                 FirstName = user.FirstName,
                 LastName = user.LastName,
+                Email = user.Email,
                 DateOfBirth = user.DateOfBirth,
                 PhoneNumber = user.PhoneNumber,
                 IsActive = user.IsActive
@@ -78,7 +82,7 @@ namespace Api.Controllers
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(BaseResponse<UserResponse>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<string> Update(int id, [FromBody] UpdateUserRequest request)
+        public async Task<JsonResult> Update(int id, [FromBody] UpdateUserRequest request)
         {
             var user = await _service.GetByIdAsync(id);
             user.FirstName = request.FirstName;
@@ -93,6 +97,7 @@ namespace Api.Controllers
                 Username = updatedUser.Username,
                 FirstName = updatedUser.FirstName,
                 LastName = updatedUser.LastName,
+                Email = user.Email,
                 DateOfBirth = updatedUser.DateOfBirth,
                 PhoneNumber = updatedUser.PhoneNumber,
                 IsActive = updatedUser.IsActive,
@@ -103,20 +108,16 @@ namespace Api.Controllers
         [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<JsonResult> Delete(int id)
         {
             var user = await _service.GetByIdAsync(id);
-            if (user == null)
-            {
-                return NotFound();
-            }
             await _service.DeleteAsync(user);
-            return NoContent();
+            return this.response("", StatusCodes.Status200OK, "Deleted successfully");
         }
 
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(BaseResponse<IEnumerable<UserResponse>>))]
-        public async Task<IActionResult> GetAll()
+        public async Task<JsonResult> GetAll()
         {
             var users = await _service.GetAllAsync();
             var mappedUsers = users.Select(u => new UserResponse()
@@ -125,12 +126,13 @@ namespace Api.Controllers
                 Username = u.Username,
                 FirstName = u.FirstName,
                 LastName = u.LastName,
+                Email = u.Email,
                 DateOfBirth = u.DateOfBirth,
                 PhoneNumber = u.PhoneNumber,
                 IsActive = u.IsActive,
                 UpdatedAt = (DateTime?)u.UpdatedAt
             });
-            return Ok(mappedUsers);
+            return this.response(mappedUsers, StatusCodes.Status200OK, "Deleted successfully");
         }
     }
 }

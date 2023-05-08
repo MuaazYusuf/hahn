@@ -10,6 +10,7 @@ using Application.Base;
 using Application.Services;
 using Api.Extensions;
 using Domain.Users.Validators;
+using Swashbuckle.AspNetCore.Examples;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -34,6 +35,7 @@ builder.Services.AddSwaggerGen(options =>
                       Version = "V1",
                       Description = "Api",
                   });
+                  options.OperationFilter<ExamplesOperationFilter>();
               });
 builder.Services.AddCors(o => o.AddPolicy("default", builder =>
             {
