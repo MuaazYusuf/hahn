@@ -4,12 +4,12 @@ using Application.DTOs.Users;
 using Domain.Users.Entities;
 using static BCrypt.Net.BCrypt;
 using Domain.Users.Validators;
+using Application.DTOs;
 
 namespace Api.Controllers
 {
-    [ApiController]
     [Route(ApiConstants.EndPoint + ApiConstants.UsersRoute)]
-    public class UserController : ControllerBase
+    public class UserController : BaseController
     {
         private readonly IUserService _service;
         private readonly ILogger<UserController> _logger;
@@ -28,12 +28,12 @@ namespace Api.Controllers
         }
 
         [HttpGet("{id}")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(UserResponse))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(BaseResponse<UserResponse>))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> GetById(int id)
+        public async Task<string> GetById(int id)
         {
             var user = await _service.GetByIdAsync(id);
-            return user == null ? NotFound() : Ok(new UserResponse()
+            return user == null ? "" : this.response(new UserResponse()
             {
                 Id = user.Id,
                 Username = user.Username,
@@ -42,13 +42,13 @@ namespace Api.Controllers
                 DateOfBirth = user.DateOfBirth,
                 PhoneNumber = user.PhoneNumber,
                 IsActive = user.IsActive
-            });
+            }, StatusCodes.Status200OK);
         }
 
         [HttpPost]
-        [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(UserResponse))]
+        [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(BaseResponse<UserResponse>))]
         [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
-        public async Task<IActionResult> Add([FromBody] AddUserRequest request)
+        public async Task<string> Add([FromBody] AddUserRequest request)
         {
             var entity = new User()
             {
@@ -62,7 +62,7 @@ namespace Api.Controllers
             };
             await _userValidator.ValidateAsync(entity);
             var user = await _service.AddAsync(entity);
-            return user == null ? UnprocessableEntity() : Created("", new UserResponse()
+            return user == null ? "" : this.response(new UserResponse()
             {
                 Id = user.Id,
                 Username = user.Username,
@@ -71,19 +71,20 @@ namespace Api.Controllers
                 DateOfBirth = user.DateOfBirth,
                 PhoneNumber = user.PhoneNumber,
                 IsActive = user.IsActive
-            });
+            }, StatusCodes.Status201Created);
         }
 
         [HttpPut("{id}")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(UserResponse))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(BaseResponse<UserResponse>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> Update(int id, [FromBody] UpdateUserRequest request)
+        public async Task<string> Update(int id, [FromBody] UpdateUserRequest request)
         {
             var user = await _service.GetByIdAsync(id);
+            // TODO Create database validations like validation middleware
             if (user == null)
             {
-                return NotFound();
+                return "Not Found";
             }
             user.FirstName = request.FirstName;
             user.LastName = request.LastName;
@@ -91,7 +92,7 @@ namespace Api.Controllers
             user.DateOfBirth = request.BirthDate;
             user.UpdatedAt = DateTime.Now;
             var updatedUser = await _service.UpdateAsync(user);
-            return Ok(new UserResponse()
+            return this.response(new UserResponse()
             {
                 Id = updatedUser.Id,
                 Username = updatedUser.Username,
@@ -101,7 +102,7 @@ namespace Api.Controllers
                 PhoneNumber = updatedUser.PhoneNumber,
                 IsActive = updatedUser.IsActive,
                 UpdatedAt = (DateTime?)updatedUser.UpdatedAt
-            });
+            }, StatusCodes.Status200OK);
         }
 
         [HttpDelete("{id}")]
@@ -119,7 +120,7 @@ namespace Api.Controllers
         }
 
         [HttpGet]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<UserResponse>))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(BaseResponse<IEnumerable<UserResponse>>))]
         public async Task<IActionResult> GetAll()
         {
             var users = await _service.GetAllAsync();
