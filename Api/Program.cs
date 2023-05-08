@@ -8,6 +8,8 @@ using Application.Services.Users;
 using Microsoft.OpenApi.Models;
 using Application.Base;
 using Application.Services;
+using Api.Extensions;
+using Domain.Users.Validators;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,8 +20,8 @@ builder.Services.AddScoped(typeof(IBaseAsyncRepository<,>), typeof(AsyncBaseRepo
                 .AddScoped<IUserRepository, UserRepository>();
 
 builder.Services.AddScoped(typeof(IBaseService<,>), typeof(BaseService<,>))
-                .AddScoped<UserService>();
-builder.Services.AddTransient<IUserService, UserService>();
+                .AddScoped<IUserService, UserService>();
+builder.Services.AddTransient<UserValidator>();
 builder.Services.AddControllers();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -48,6 +50,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "API v1"));
 }
+app.ValidationMiddleware();
 
 app.UseCors("default");
 

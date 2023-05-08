@@ -3,6 +3,7 @@ using Application.Services.Users;
 using Application.DTOs.Users;
 using Domain.Users.Entities;
 using static BCrypt.Net.BCrypt;
+using Domain.Users.Validators;
 
 namespace Api.Controllers
 {
@@ -12,11 +13,18 @@ namespace Api.Controllers
     {
         private readonly IUserService _service;
         private readonly ILogger<UserController> _logger;
-        public UserController(ILogger<UserController> logger
-            , IUserService service)
+
+        private readonly UserValidator _userValidator;
+        public UserController
+        (
+            ILogger<UserController> logger,
+            IUserService service,
+            UserValidator userValidator
+        )
         {
             _service = service;
             _logger = logger;
+            _userValidator = userValidator;
         }
 
         [HttpGet("{id}")]
@@ -52,7 +60,7 @@ namespace Api.Controllers
                 PhoneNumber = request.PhoneNumber,
                 DateOfBirth = request.BirthDate
             };
-
+            await _userValidator.ValidateAsync(entity);
             var user = await _service.AddAsync(entity);
             return user == null ? UnprocessableEntity() : Created("", new UserResponse()
             {
