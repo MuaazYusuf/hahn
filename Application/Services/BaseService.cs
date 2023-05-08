@@ -1,5 +1,6 @@
 using Application.Base;
 using Domain.Base;
+using Application.DBExceptions;
 
 namespace Application.Services
 {
@@ -14,7 +15,8 @@ namespace Application.Services
 
         public async Task<TEntity?> GetByIdAsync(TId id)
         {
-            return await _repository.GetByIdAsync(id);
+            var entity = await _repository.GetByIdAsync(id);
+            return entity ?? throw new EntityNotFoundException($"Entity with id {id} was not found");
         }
 
         public async Task<IEnumerable<TEntity>> GetAllAsync()

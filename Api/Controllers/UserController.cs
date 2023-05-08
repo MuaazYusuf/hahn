@@ -81,11 +81,6 @@ namespace Api.Controllers
         public async Task<string> Update(int id, [FromBody] UpdateUserRequest request)
         {
             var user = await _service.GetByIdAsync(id);
-            // TODO Create database validations like validation middleware
-            if (user == null)
-            {
-                return "Not Found";
-            }
             user.FirstName = request.FirstName;
             user.LastName = request.LastName;
             user.PhoneNumber = request.PhoneNumber;

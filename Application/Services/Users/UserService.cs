@@ -1,6 +1,6 @@
 using Domain.Users.Entities;
 using Domain.Users.Interfaces;
-
+using Application.DBExceptions;
 namespace Application.Services.Users
 {
     public class UserService : BaseService<User, int>, IUserService
@@ -22,5 +22,16 @@ namespace Application.Services.Users
         {
             return await _userRepository.GetByEmailAsync(email);
         }
+
+        public new async Task<User> AddAsync(User user)
+        {
+            var exists = await this.GetByEmailAsync(user.Email);
+            if (exists != null)
+            {
+                throw new DbExecutionException("User with this email already exists");
+            }
+            return await base.AddAsync(user);
+        }
+
     }
 }
