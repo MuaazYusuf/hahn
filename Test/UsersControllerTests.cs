@@ -12,6 +12,13 @@ using Xunit;
 using Microsoft.Extensions.DependencyInjection;
 using Infrastructure.Data.Repositories.Users;
 using Domain.Users.Interfaces;
+using Application.Validators;
+using Xunit.Abstractions;
+using Application.DTOs;
+using Newtonsoft.Json;
+using System.Net;
+using Application.DBExceptions;
+
 
 namespace Test;
 
@@ -21,17 +28,20 @@ public class UsersControllerTests
     private readonly Mock<ILogger<UserController>> _loggerMock;
     private readonly UserController _controller;
     private readonly Mock<IUserService> _userServiceMock;
-    public UsersControllerTests()
+    private readonly Mock<UserValidator> _userValidatorMock;
+    private readonly ITestOutputHelper _output;
+    public UsersControllerTests(ITestOutputHelper output)
     {
+        _output = output;
         _userRepositoryMock = new Mock<IUserRepository>();
         _userServiceMock = new Mock<IUserService>();
         _loggerMock = new Mock<ILogger<UserController>>();
-        _controller = new UserController(_loggerMock.Object, _userServiceMock.Object);
-
+        _userValidatorMock = new Mock<UserValidator>();
+        _controller = new UserController(_loggerMock.Object, _userServiceMock.Object, _userValidatorMock.Object);
     }
 
     [Fact]
-    public async Task GetById_ShouldReturn200AndUserResponse_WhenUserExists()
+    public async Task GetById_ReturnsUser_WhenUserExists()
     {
         // Arrange
         var id = 1;
@@ -39,7 +49,9 @@ public class UsersControllerTests
         {
             Id = id,
             Username = "testuser",
+            FirstName = "Test",
             LastName = "testlastname",
+            Email = "testuser@test.com",
             DateOfBirth = new DateTime(2000, 1, 1),
             PhoneNumber = "1234567890",
             IsActive = true
@@ -58,30 +70,30 @@ public class UsersControllerTests
 
         // Act
         var result = await _controller.GetById(id);
+        var serializedJson = JsonConvert.SerializeObject(result.Value);
+        BaseResponse<UserResponse> deserializedJson = JsonConvert.DeserializeObject<BaseResponse<UserResponse>>(serializedJson);
 
-        // Assert
-        var okResult = Assert.IsType<OkObjectResult>(result);
-        var actualResponse = Assert.IsType<UserResponse>(okResult.Value);
-        Assert.Equal(expectedResponse.Id, actualResponse.Id);
-        Assert.Equal(expectedResponse.Username, actualResponse.Username);
-        Assert.Equal(expectedResponse.LastName, actualResponse.LastName);
-        Assert.Equal(expectedResponse.DateOfBirth, actualResponse.DateOfBirth);
-        Assert.Equal(expectedResponse.PhoneNumber, actualResponse.PhoneNumber);
-        Assert.Equal(expectedResponse.IsActive, actualResponse.IsActive);
+        // // // Assert
+        Assert.IsType<JsonResult>(result);
+        Assert.NotNull(deserializedJson);
+        Assert.Equal(StatusCodes.Status200OK, deserializedJson.code);
+        Assert.Equal(user.Id, deserializedJson.data.Id);
+        Assert.Equal(user.Username, deserializedJson.data.Username);
+        Assert.Equal(user.FirstName, deserializedJson.data.FirstName);
+        Assert.Equal(user.LastName, deserializedJson.data.LastName);
+        Assert.Equal(user.Email, deserializedJson.data.Email);
+        Assert.Equal(user.DateOfBirth, deserializedJson.data.DateOfBirth);
+        Assert.Equal(user.PhoneNumber, deserializedJson.data.PhoneNumber);
+        Assert.Equal(user.IsActive, deserializedJson.data.IsActive);
     }
 
     [Fact]
     public async Task GetById_WithInvalidId_ReturnsNotFound()
     {
-        // Arrange
-        int userId = 1;
-        _userServiceMock.Setup(x => x.GetByIdAsync(userId)).ReturnsAsync((User)null);
-
-        // Act
-        var result = await _controller.GetById(userId);
-
-        // Assert
-        Assert.IsType<NotFoundResult>(result);
+        var id = 1;
+        _userServiceMock.Setup(s => s.GetByIdAsync(id)).ThrowsAsync(new EntityNotFoundException($"Entity with id {id} was not found"));
+        // Act and Assert
+        await Assert.ThrowsAsync<EntityNotFoundException>(() => _controller.GetById(1));
     }
 
     [Fact]
@@ -113,11 +125,14 @@ public class UsersControllerTests
             .ReturnsAsync(userEntity);
 
         // Act
-        var result = await _controller.Add(request) as ObjectResult;
+        var result = await _controller.Add(request);
+        var serializedJson = JsonConvert.SerializeObject(result.Value);
+        BaseResponse<UserResponse> deserializedJson = JsonConvert.DeserializeObject<BaseResponse<UserResponse>>(serializedJson);
 
         // Assert
-        Assert.NotNull(result);
-        Assert.Equal(StatusCodes.Status201Created, result.StatusCode);
-        Assert.Equal(typeof(UserResponse), result.Value.GetType());
+        Assert.IsType<JsonResult>(result);
+        Assert.NotNull(deserializedJson);
+        Assert.Equal(StatusCodes.Status201Created, deserializedJson.code);
+        Assert.IsType<UserResponse>(deserializedJson.data);
     }
 }

@@ -3,7 +3,7 @@ using Domain.Users.Entities;
 using Application.Base;
 using FluentValidation.Results;
 
-namespace Domain.Users.Validators
+namespace Application.Validators
 {
     public class UserValidator : AbstractValidator<User>
     {

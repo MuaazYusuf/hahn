@@ -9,7 +9,7 @@ using Microsoft.OpenApi.Models;
 using Application.Base;
 using Application.Services;
 using Api.Extensions;
-using Domain.Users.Validators;
+using Application.Validators;
 
 var builder = WebApplication.CreateBuilder(args);
 

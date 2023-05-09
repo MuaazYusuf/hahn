@@ -27,32 +27,35 @@ namespace Api.Middlewares
                 switch (ex)
                 {
                     case DbExecutionException exception:
-                        var DBResponse = new
+                        var DBResponse = new ErrorResponse
                         {
-                            message = "An unexpected error occurred while executing the database operation!",
-                            errors = exception.Message
+                            Message = "An unexpected error occurred while executing the database operation!",
+                            Errors = exception.Message,
+                            Code = HttpStatusCode.BadRequest
                         };
                         context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
                         context.Response.ContentType = "application/json";
+                        JsonConvert.SerializeObject(DBResponse);
                         await context.Response.WriteAsync(JsonConvert.SerializeObject(DBResponse));
                         break;
                     case EntityNotFoundException exception:
-                        var EntityResponse = new
+                        var EntityResponse = new ErrorResponse
                         {
-                            message = "Not Found",
-                            errors = exception.Message
+                            Code = HttpStatusCode.NotFound,
+                            Message = "Not Found",
+                            Errors = exception.Message
                         };
-                        context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                        context.Response.StatusCode = (int)HttpStatusCode.NotFound;
                         context.Response.ContentType = "application/json";
                         await context.Response.WriteAsync(JsonConvert.SerializeObject(EntityResponse));
                         break;
                     case ValidationException exception:
                         var errors = exception.Errors.GroupBy(x => x.PropertyName, x => x.ErrorMessage)
                                                                 .ToDictionary(g => g.Key, g => g.ToArray());
-                        var response = new
+                        var response = new ErrorResponse
                         {
-                            message = "Validation Failed",
-                            errors = errors
+                            Message = "Validation Failed",
+                            Errors = errors
                         };
                         context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
                         context.Response.ContentType = "application/json";

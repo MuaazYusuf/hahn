@@ -3,7 +3,7 @@ using Application.Services.Users;
 using Application.DTOs.Users;
 using Domain.Users.Entities;
 using static BCrypt.Net.BCrypt;
-using Domain.Users.Validators;
+using Application.Validators;
 using Application.DTOs;
 
 namespace Api.Controllers
