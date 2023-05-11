@@ -15,7 +15,7 @@ namespace Application.DTOs.Users
         [Required]
         [StringLength(125)]
         public string LastName { get; set; }
-        public DateTime BirthDate { get; set; }
+        public DateTime DateOfBirth { get; set; }
 
         [Required]
         [StringLength(125)]

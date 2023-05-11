@@ -54,6 +54,7 @@ namespace Api.Middlewares
                                                                 .ToDictionary(g => g.Key, g => g.ToArray());
                         var response = new ErrorResponse
                         {
+                            Code = HttpStatusCode.BadRequest,
                             Message = "Validation Failed",
                             Errors = errors
                         };

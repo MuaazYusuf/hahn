@@ -60,7 +60,7 @@ namespace Api.Controllers
                 LastName = request.LastName,
                 Password = HashPassword(request.Password, 12),
                 PhoneNumber = request.PhoneNumber,
-                DateOfBirth = request.BirthDate
+                DateOfBirth = request.DateOfBirth
             };
             await _userValidator.ValidateAsync(entity);
             var user = await _service.AddAsync(entity);
@@ -87,7 +87,7 @@ namespace Api.Controllers
             user.FirstName = request.FirstName;
             user.LastName = request.LastName;
             user.PhoneNumber = request.PhoneNumber;
-            user.DateOfBirth = request.BirthDate;
+            user.DateOfBirth = request.DateOfBirth;
             user.UpdatedAt = DateTime.Now;
             var updatedUser = await _service.UpdateAsync(user);
             return this.response(new UserResponse()
@@ -131,7 +131,7 @@ namespace Api.Controllers
                 IsActive = u.IsActive,
                 UpdatedAt = (DateTime?)u.UpdatedAt
             });
-            return this.response(mappedUsers, StatusCodes.Status200OK, "Deleted successfully");
+            return this.response(mappedUsers, StatusCodes.Status200OK, "OK");
         }
     }
 }

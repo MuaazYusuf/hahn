@@ -107,7 +107,7 @@ public class UsersControllerTests
             LastName = "User",
             Password = "password",
             PhoneNumber = "1234567890",
-            BirthDate = new DateTime(1990, 1, 1)
+            DateOfBirth = new DateTime(1990, 1, 1)
         };
 
         var userEntity = new User()
@@ -118,7 +118,7 @@ public class UsersControllerTests
             LastName = request.LastName,
             Password = request.Password,
             PhoneNumber = request.PhoneNumber,
-            DateOfBirth = request.BirthDate
+            DateOfBirth = request.DateOfBirth
         };
 
         _userServiceMock.Setup(x => x.AddAsync(It.IsAny<User>()))
