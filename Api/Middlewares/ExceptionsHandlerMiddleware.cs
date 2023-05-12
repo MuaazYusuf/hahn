@@ -1,6 +1,5 @@
 using Application.DBExceptions;
 using FluentValidation;
-using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 using System;
 using System.Net;
@@ -27,11 +26,12 @@ namespace Api.Middlewares
                 switch (ex)
                 {
                     case DbExecutionException exception:
+                        // JsonConvert.SerializeObject(new { errors = new { $"{exception.PropertyName} {exception.errorMessage}" = new[] { exception.errorMessage } } });
                         var DBResponse = new ErrorResponse
                         {
-                            Message = "An unexpected error occurred while executing the database operation!",
-                            Errors = exception.Message,
-                            Code = HttpStatusCode.BadRequest
+                            message = "An unexpected error occurred while executing the database operation!",
+                            errors = new Dictionary<string, string[]> { { exception.PropertyName, new[] { exception.ErrorMessage } } },
+                            code = HttpStatusCode.BadRequest
                         };
                         context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
                         context.Response.ContentType = "application/json";
@@ -41,9 +41,9 @@ namespace Api.Middlewares
                     case EntityNotFoundException exception:
                         var EntityResponse = new ErrorResponse
                         {
-                            Code = HttpStatusCode.NotFound,
-                            Message = "Not Found",
-                            Errors = exception.Message
+                            code = HttpStatusCode.NotFound,
+                            message = "Not Found",
+                            errors = exception.Message
                         };
                         context.Response.StatusCode = (int)HttpStatusCode.NotFound;
                         context.Response.ContentType = "application/json";
@@ -54,9 +54,9 @@ namespace Api.Middlewares
                                                                 .ToDictionary(g => g.Key, g => g.ToArray());
                         var response = new ErrorResponse
                         {
-                            Code = HttpStatusCode.BadRequest,
-                            Message = "Validation Failed",
-                            Errors = errors
+                            code = HttpStatusCode.BadRequest,
+                            message = "Validation Failed",
+                            errors = errors
                         };
                         context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
                         context.Response.ContentType = "application/json";

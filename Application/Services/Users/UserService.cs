@@ -28,7 +28,7 @@ namespace Application.Services.Users
             var exists = await this.GetByEmailAsync(user.Email);
             if (exists != null)
             {
-                throw new DbExecutionException("User with this email already exists");
+                throw new DbExecutionException("Email", "Email already exists");
             }
             return await base.AddAsync(user);
         }
