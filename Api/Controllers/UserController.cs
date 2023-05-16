@@ -5,6 +5,8 @@ using Domain.Users.Entities;
 using static BCrypt.Net.BCrypt;
 using Application.Validators;
 using Application.DTOs;
+using Microsoft.Extensions.Localization;
+using Api.Resources;
 
 namespace Api.Controllers
 {
@@ -15,16 +17,19 @@ namespace Api.Controllers
         private readonly ILogger<UserController> _logger;
 
         private readonly UserValidator _userValidator;
+        private readonly IStringLocalizer<SharedResource> _SharedResource;
         public UserController
         (
             ILogger<UserController> logger,
             IUserService service,
-            UserValidator userValidator
+            UserValidator userValidator,
+            IStringLocalizer<SharedResource> SharedResource
         )
         {
             _service = service;
             _logger = logger;
             _userValidator = userValidator;
+            this._SharedResource = SharedResource;
         }
 
         [HttpGet("{id}")]
@@ -43,7 +48,7 @@ namespace Api.Controllers
                 DateOfBirth = user.DateOfBirth,
                 PhoneNumber = user.PhoneNumber,
                 IsActive = user.IsActive
-            }, StatusCodes.Status200OK);
+            }, StatusCodes.Status200OK, _SharedResource["DONE"]);
         }
 
         [HttpPost]
@@ -74,7 +79,7 @@ namespace Api.Controllers
                 DateOfBirth = user.DateOfBirth,
                 PhoneNumber = user.PhoneNumber,
                 IsActive = user.IsActive
-            }, StatusCodes.Status201Created);
+            }, StatusCodes.Status201Created, _SharedResource["Resource added successfully"]);
         }
 
         [HttpPut("{id}")]
@@ -101,7 +106,7 @@ namespace Api.Controllers
                 PhoneNumber = updatedUser.PhoneNumber,
                 IsActive = updatedUser.IsActive,
                 UpdatedAt = (DateTime?)updatedUser.UpdatedAt
-            }, StatusCodes.Status200OK);
+            }, StatusCodes.Status200OK, _SharedResource["Resource updated successfully"]);
         }
 
         [HttpDelete("{id}")]
@@ -111,7 +116,7 @@ namespace Api.Controllers
         {
             var user = await _service.GetByIdAsync(id);
             await _service.DeleteAsync(user);
-            return this.response("", StatusCodes.Status200OK, "Deleted successfully");
+            return this.response("", StatusCodes.Status200OK, _SharedResource["Resource deleted successfully"]);
         }
 
         [HttpGet]
@@ -131,7 +136,7 @@ namespace Api.Controllers
                 IsActive = u.IsActive,
                 UpdatedAt = (DateTime?)u.UpdatedAt
             });
-            return this.response(mappedUsers, StatusCodes.Status200OK, "OK");
+            return this.response(mappedUsers, StatusCodes.Status200OK, _SharedResource["DONE"]);
         }
     }
 }
