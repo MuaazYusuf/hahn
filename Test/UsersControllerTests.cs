@@ -18,7 +18,8 @@ using Application.DTOs;
 using Newtonsoft.Json;
 using System.Net;
 using Application.DBExceptions;
-
+using Microsoft.Extensions.Localization;
+using Api.Resources;
 
 namespace Test;
 
@@ -30,6 +31,7 @@ public class UsersControllerTests
     private readonly Mock<IUserService> _userServiceMock;
     private readonly Mock<UserValidator> _userValidatorMock;
     private readonly ITestOutputHelper _output;
+    private readonly Mock<IStringLocalizer<SharedResource>> _SharedResource;
     public UsersControllerTests(ITestOutputHelper output)
     {
         _output = output;
@@ -37,7 +39,8 @@ public class UsersControllerTests
         _userServiceMock = new Mock<IUserService>();
         _loggerMock = new Mock<ILogger<UserController>>();
         _userValidatorMock = new Mock<UserValidator>();
-        _controller = new UserController(_loggerMock.Object, _userServiceMock.Object, _userValidatorMock.Object);
+        _SharedResource = new Mock<IStringLocalizer<SharedResource>>();
+        _controller = new UserController(_loggerMock.Object, _userServiceMock.Object, _userValidatorMock.Object, _SharedResource.Object);
     }
 
     [Fact]
@@ -62,7 +65,7 @@ public class UsersControllerTests
             Id = id,
             Username = "testuser",
             LastName = "testlastname",
-            DateOfBirth = new DateTime(2000, 1, 1),
+            DateOfBirth = new DateTime(2000, 1, 1).ToString("dd-MM-yyyy"),
             PhoneNumber = "1234567890",
             IsActive = true
         };
@@ -82,7 +85,7 @@ public class UsersControllerTests
         Assert.Equal(user.FirstName, deserializedJson.data.FirstName);
         Assert.Equal(user.LastName, deserializedJson.data.LastName);
         Assert.Equal(user.Email, deserializedJson.data.Email);
-        Assert.Equal(user.DateOfBirth, deserializedJson.data.DateOfBirth);
+        Assert.Equal(user.DateOfBirth.ToString("dd-MM-yyyy"), deserializedJson.data.DateOfBirth);
         Assert.Equal(user.PhoneNumber, deserializedJson.data.PhoneNumber);
         Assert.Equal(user.IsActive, deserializedJson.data.IsActive);
     }
