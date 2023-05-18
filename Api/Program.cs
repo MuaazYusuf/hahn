@@ -34,6 +34,15 @@ builder.Services.AddScoped(typeof(IBaseAsyncRepository<,>), typeof(AsyncBaseRepo
 builder.Services.AddScoped(typeof(IBaseService<,>), typeof(BaseService<,>))
                 .AddScoped<IUserService, UserService>();
 builder.Services.AddTransient<UserValidator>();
+
+builder.Services.AddCors(o => o.AddPolicy(ApiConstants.DEFAULT_CORS_POLICY, builder =>
+            {
+                builder.WithOrigins("http://localhost:4200")
+                       .AllowAnyMethod()
+                       .AllowAnyHeader()
+                       .AllowCredentials();
+            }));
+
 builder.Services.AddControllers().AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix)
     .AddDataAnnotationsLocalization();
 
@@ -49,12 +58,7 @@ builder.Services.AddSwaggerGen(options =>
                   });
                   options.OperationFilter<ContentLanguageHeader>();
               });
-builder.Services.AddCors(o => o.AddPolicy("default", builder =>
-            {
-                builder.AllowAnyOrigin()
-                       .AllowAnyMethod()
-                       .AllowAnyHeader();
-            }));
+
 
 var app = builder.Build();
 
@@ -67,17 +71,10 @@ if (app.Environment.IsDevelopment())
 }
 
 app.ExceptionsHandlerMiddleware();
-
-app.UseCors("default");
-
 app.UseHttpsRedirection();
-
-
-
 app.UseRouting();
-
+app.UseCors(ApiConstants.DEFAULT_CORS_POLICY);
 app.UseAuthorization();
-
 app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
@@ -87,5 +84,14 @@ app.UseRequestLocalization(new RequestLocalizationOptions
 {
     ApplyCurrentCultureToResponseHeaders = true
 });
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
 
+    var context = services.GetRequiredService<EFContext>();
+    if (context.Database.GetPendingMigrations().Any())
+    {
+        context.Database.Migrate();
+    }
+}
 app.Run();

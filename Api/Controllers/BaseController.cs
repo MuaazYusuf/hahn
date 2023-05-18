@@ -1,8 +1,10 @@
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
 namespace Api.Controllers
 {
+    [EnableCors(ApiConstants.DEFAULT_CORS_POLICY)]
     [ApiController]
     public class BaseController : ControllerBase
     {

@@ -5,4 +5,6 @@ public static class ApiConstants
 
     // ROUTES
     public const string UsersRoute = "users";
+
+    public const string DEFAULT_CORS_POLICY = "default";
 }
