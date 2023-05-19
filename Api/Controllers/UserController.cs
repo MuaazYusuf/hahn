@@ -45,7 +45,7 @@ namespace Api.Controllers
                 FirstName = user.FirstName,
                 LastName = user.LastName,
                 Email = user.Email,
-                DateOfBirth = user.DateOfBirth.ToString("dd-MM-yyyy"),
+                DateOfBirth = user.DateOfBirth.ToShortDateString(),
                 PhoneNumber = user.PhoneNumber,
                 IsActive = user.IsActive
             }, StatusCodes.Status200OK, _SharedResource["DONE"]);
@@ -76,7 +76,7 @@ namespace Api.Controllers
                 FirstName = user.FirstName,
                 LastName = user.LastName,
                 Email = user.Email,
-                DateOfBirth = user.DateOfBirth.ToString("dd-MM-yyyy"),
+                DateOfBirth = user.DateOfBirth.ToShortDateString(),
                 PhoneNumber = user.PhoneNumber,
                 IsActive = user.IsActive
             }, StatusCodes.Status201Created, _SharedResource["Resource added successfully"]);
@@ -102,7 +102,7 @@ namespace Api.Controllers
                 FirstName = updatedUser.FirstName,
                 LastName = updatedUser.LastName,
                 Email = user.Email,
-                DateOfBirth = updatedUser.DateOfBirth.ToString("dd-MM-yyyy"),
+                DateOfBirth = updatedUser.DateOfBirth.ToShortDateString(),
                 PhoneNumber = updatedUser.PhoneNumber,
                 IsActive = updatedUser.IsActive,
                 UpdatedAt = (DateTime?)updatedUser.UpdatedAt
@@ -131,7 +131,7 @@ namespace Api.Controllers
                 FirstName = u.FirstName,
                 LastName = u.LastName,
                 Email = u.Email,
-                DateOfBirth = u.DateOfBirth.ToString("dd-MM-yyyy"),
+                DateOfBirth = u.DateOfBirth.ToShortDateString(),
                 PhoneNumber = u.PhoneNumber,
                 IsActive = u.IsActive,
                 UpdatedAt = (DateTime?)u.UpdatedAt

@@ -65,7 +65,7 @@ public class UsersControllerTests
             Id = id,
             Username = "testuser",
             LastName = "testlastname",
-            DateOfBirth = new DateTime(2000, 1, 1).ToString("dd-MM-yyyy"),
+            DateOfBirth = new DateTime(2000, 1, 1).ToShortDateString(),
             PhoneNumber = "1234567890",
             IsActive = true
         };
@@ -85,7 +85,7 @@ public class UsersControllerTests
         Assert.Equal(user.FirstName, deserializedJson.data.FirstName);
         Assert.Equal(user.LastName, deserializedJson.data.LastName);
         Assert.Equal(user.Email, deserializedJson.data.Email);
-        Assert.Equal(user.DateOfBirth.ToString("dd-MM-yyyy"), deserializedJson.data.DateOfBirth);
+        Assert.Equal(user.DateOfBirth.ToShortDateString(), deserializedJson.data.DateOfBirth);
         Assert.Equal(user.PhoneNumber, deserializedJson.data.PhoneNumber);
         Assert.Equal(user.IsActive, deserializedJson.data.IsActive);
     }
