@@ -6,7 +6,9 @@ namespace Api.Extensions
     {
         public static IApplicationBuilder ExceptionsHandlerMiddleware(this IApplicationBuilder builder)
         {
-            return builder.UseMiddleware<ExceptionsHandlerMiddleware>();
+            return builder
+            .UseMiddleware<ExceptionsHandlerMiddleware>()
+            .UseMiddleware<JwtMiddleware>();
         }
     }
 }

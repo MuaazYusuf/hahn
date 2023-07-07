@@ -63,6 +63,16 @@ namespace Api.Middlewares
                         await context.Response.WriteAsync(JsonConvert.SerializeObject(response));
                         break;
                     default:
+                        var defaultResponse = new ErrorResponse
+                        {
+                            code = HttpStatusCode.BadRequest,
+                            message = ex.Message,
+                            errors = ""
+                        };
+                        context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                        context.Response.ContentType = "application/json";
+                        JsonConvert.SerializeObject(ex);
+                        await context.Response.WriteAsync(JsonConvert.SerializeObject(defaultResponse));
                         break;
                 }
             }

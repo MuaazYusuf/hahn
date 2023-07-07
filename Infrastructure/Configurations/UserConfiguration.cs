@@ -1,4 +1,4 @@
-using Domain.Users.Entities;
+using Domain.Entities.User;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Infrastructure.Configurations

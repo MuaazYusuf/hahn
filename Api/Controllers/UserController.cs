@@ -1,12 +1,12 @@
 using Microsoft.AspNetCore.Mvc;
 using Application.Services.Users;
 using Application.DTOs.Users;
-using Domain.Users.Entities;
-using static BCrypt.Net.BCrypt;
+using Domain.Entities.User;
 using Application.Validators;
 using Application.DTOs;
 using Microsoft.Extensions.Localization;
 using Api.Resources;
+using Application.Helpers;
 
 namespace Api.Controllers
 {
@@ -63,7 +63,7 @@ namespace Api.Controllers
                 Username = request.Username,
                 FirstName = request.FirstName,
                 LastName = request.LastName,
-                Password = HashPassword(request.Password, 12),
+                Password =  PasswordHelper.Hash(request.Password),
                 PhoneNumber = request.PhoneNumber,
                 DateOfBirth = request.DateOfBirth
             };

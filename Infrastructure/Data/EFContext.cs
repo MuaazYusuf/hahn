@@ -1,4 +1,4 @@
-using Domain.Users.Entities;
+using Domain.Entities.User;
 using Infrastructure.Configurations;
 using Microsoft.EntityFrameworkCore;
 

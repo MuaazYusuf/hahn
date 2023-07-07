@@ -1,5 +1,5 @@
 using FluentValidation;
-using Domain.Users.Entities;
+using Domain.Entities.User;
 using Application.Base;
 using FluentValidation.Results;
 
@@ -12,8 +12,12 @@ namespace Application.Validators
             RuleFor(x => x.FirstName).NotEmpty().WithMessage("First name is required");
             RuleFor(x => x.LastName).NotEmpty().WithMessage("Last name is required");
             RuleFor(x => x.Email).NotEmpty().EmailAddress().WithMessage("Invalid email address");
-            RuleFor(x => x.Password).NotEmpty().WithMessage("Password is required").MinimumLength(8).WithMessage("Password must be at least 8 characters long");
+            RuleFor(x => x.Password).NotEmpty().WithMessage("Password is required").MinimumLength(8).WithMessage("Password must be at least 8 characters long").Matches(@"[A-Z]+").WithMessage("Your password must contain at least one uppercase letter.")
+                    .Matches(@"[a-z]+").WithMessage("Your password must contain at least one lowercase letter.")
+                    .Matches(@"[0-9]+").WithMessage("Your password must contain at least one number.")
+                    .Matches(@"[\!\?\*\.]+").WithMessage("Your password must contain at least one (!? *.).");
             RuleFor(x => x.DateOfBirth).NotEmpty().Must(checkAgeValidity).WithMessage("Invalid date of birth");
+            RuleFor(x => x.PhoneNumber).NotEmpty().Matches(@"^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\./0-9]*$").WithMessage("Invalid date of birth");
         }
 
         protected bool checkAgeValidity(DateTime date)

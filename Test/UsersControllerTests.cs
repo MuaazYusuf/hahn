@@ -3,7 +3,7 @@ using Api.Controllers;
 using Application.DTOs.Users;
 using Application.Services.Users;
 using Application.Services;
-using Domain.Users.Entities;
+using Domain.Entities.User;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;

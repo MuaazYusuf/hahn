@@ -1,4 +1,4 @@
-using Domain.Users.Entities;
+using Domain.Entities.User;
 using Domain.Base;
 namespace Domain.Users.Interfaces
 {

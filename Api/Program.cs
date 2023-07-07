@@ -12,10 +12,11 @@ using Api.Extensions;
 using Application.Validators;
 using Domain.Constants;
 using Microsoft.AspNetCore.Mvc.Razor;
-using System.Globalization;
-using Microsoft.AspNetCore.Localization;
+
+using Api.Jwt;
 
 var builder = WebApplication.CreateBuilder(args);
+ConfigurationManager configuration = builder.Configuration;
 
 // Add services to the container.
 builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
@@ -28,6 +29,8 @@ builder.Services.Configure<RequestLocalizationOptions>(options =>
 });
 var connectionString = builder.Configuration.GetConnectionString("DDDConnectionString");
 builder.Services.AddDbContextPool<EFContext>(options => options.UseSqlServer(connectionString));
+
+builder.Services.AddScoped<IJwtUtils, JwtUtils>();
 builder.Services.AddScoped(typeof(IBaseAsyncRepository<,>), typeof(AsyncBaseRepository<,>))
                 .AddScoped<IUserRepository, UserRepository>();
 
@@ -46,7 +49,6 @@ builder.Services.AddCors(o => o.AddPolicy(ApiConstants.DEFAULT_CORS_POLICY, buil
 builder.Services.AddControllers().AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix)
     .AddDataAnnotationsLocalization();
 
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
               {

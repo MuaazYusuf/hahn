@@ -1,4 +1,4 @@
-using Domain.Users.Entities;
+using Domain.Entities.User;
 using Domain.Users.Interfaces;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
