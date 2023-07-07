@@ -14,6 +14,9 @@ using Domain.Constants;
 using Microsoft.AspNetCore.Mvc.Razor;
 
 using Api.Jwt;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 ConfigurationManager configuration = builder.Configuration;
@@ -22,7 +25,7 @@ ConfigurationManager configuration = builder.Configuration;
 builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
 builder.Services.Configure<RequestLocalizationOptions>(options =>
 {
-    var supportedCultures = new[] { Language.EN, Language.AR};
+    var supportedCultures = new[] { Language.EN, Language.AR };
     options.SetDefaultCulture(Language.EN)
         .AddSupportedCultures(supportedCultures)
         .AddSupportedUICultures(supportedCultures);
@@ -59,8 +62,32 @@ builder.Services.AddSwaggerGen(options =>
                       Description = "Api",
                   });
                   options.OperationFilter<ContentLanguageHeader>();
+                  options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                  {
+                      In = ParameterLocation.Header,
+                      Description = "Please enter token",
+                      Name = "Authorization",
+                      Type = SecuritySchemeType.Http,
+                      BearerFormat = "JWT",
+                      Scheme = "bearer"
+                  });
+                  options.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                    {
+                        new OpenApiSecurityScheme
+                        {
+                            Reference = new OpenApiReference
+                            {
+                                Type=ReferenceType.SecurityScheme,
+                                Id="Bearer"
+                            }
+                        },
+                        new string[]{}
+                    }
+                });
               });
 
+builder.Services.AddHttpContextAccessor();
 
 var app = builder.Build();
 

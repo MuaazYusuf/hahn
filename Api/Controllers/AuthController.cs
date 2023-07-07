@@ -1,13 +1,14 @@
+using Api.Attributes;
 using Api.Jwt;
 using Application.DTOs;
 using Application.DTOs.Auth;
 using Application.Helpers;
 using Application.Services.Users;
 using Domain.Entities;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using Domain.Entities.User;
 
 
 namespace Api.Controllers
@@ -18,12 +19,14 @@ namespace Api.Controllers
         private readonly IUserService _userService;
         private readonly IConfiguration _configuration;
         private readonly IJwtUtils _jwtUtils;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public AuthController(IUserService userService, IConfiguration configuration, IJwtUtils jwtUtils)
+        public AuthController(IUserService userService, IConfiguration configuration, IJwtUtils jwtUtils, IHttpContextAccessor httpContextAccessor)
         {
             _userService = userService;
             _configuration = configuration;
             _jwtUtils = jwtUtils;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         [HttpPost]
@@ -102,12 +105,15 @@ namespace Api.Controllers
             }, StatusCodes.Status200OK, "Successfully refreshed token");
         }
 
-        [HttpPost, Authorize]
+        [HttpPost]
+        [Authorize]
         [Route(ApiConstants.RevokeTokenRoute)]
         public async Task<JsonResult> RevokeAsync()
         {
-            var email = User.Identity.Name;
-            var user = await _userService.GetByEmailAsync(email);
+            System.Console.WriteLine("SSDASDASD");
+            var currentUser =  (User?)_httpContextAccessor.HttpContext.Items["User"];
+            System.Console.WriteLine(currentUser);
+            var user = await _userService.GetByEmailAsync(currentUser.Email);
             if (user == null) return this.response("", StatusCodes.Status400BadRequest);
             user.RefreshToken = null;
             await _userService.UpdateAsync(user);

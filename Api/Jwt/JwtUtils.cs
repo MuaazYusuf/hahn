@@ -49,14 +49,12 @@ public class JwtUtils : IJwtUtils
             return null;
 
         var tokenValidationParameters = getTokenValidationParameters();
-
         var tokenHandler = new JwtSecurityTokenHandler();
         try
         {
             tokenHandler.ValidateToken(token, tokenValidationParameters, out SecurityToken securityToken);
             var jwtToken = (JwtSecurityToken)securityToken;
-            var email = jwtToken.Claims.First(x => x.Type == ClaimTypes.Name).Value;
-
+            var email = jwtToken.Claims.First().Value;
             // return email from JWT token if validation successful
             return email;
         }
