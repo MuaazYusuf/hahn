@@ -110,14 +110,21 @@ namespace Api.Controllers
         [Route(ApiConstants.RevokeTokenRoute)]
         public async Task<JsonResult> RevokeAsync()
         {
-            System.Console.WriteLine("SSDASDASD");
-            var currentUser =  (User?)_httpContextAccessor.HttpContext.Items["User"];
-            System.Console.WriteLine(currentUser);
+            var currentUser = (User?)_httpContextAccessor.HttpContext.Items["User"];
             var user = await _userService.GetByEmailAsync(currentUser.Email);
             if (user == null) return this.response("", StatusCodes.Status400BadRequest);
             user.RefreshToken = null;
             await _userService.UpdateAsync(user);
             return this.response("", StatusCodes.Status200OK, "Successfully revoked refresh token");
+        }
+
+        [Authorize]
+        [HttpPost("logout")]
+        public async Task<IActionResult> Logout()
+        {
+            var currentUser = (User?)_httpContextAccessor?.HttpContext?.Items["User"];
+            await _userService.LogoutAsync(currentUser?.Email);
+            return this.response("", StatusCodes.Status200OK, "Successfully logged out");
         }
     }
 }

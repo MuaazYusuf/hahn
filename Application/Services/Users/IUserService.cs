@@ -6,5 +6,7 @@ namespace Application.Services.Users
     {
         Task<User?> GetByUsernameAsync(string username);
         Task<User?> GetByEmailAsync(string email);
+
+        Task LogoutAsync(string email);
     }
 }

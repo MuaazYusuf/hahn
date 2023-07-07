@@ -33,5 +33,15 @@ namespace Application.Services.Users
             return await base.AddAsync(user);
         }
 
+        public async Task LogoutAsync(string email)
+        {
+            User? user = await _userRepository.GetByEmailAsync(email);
+            if (user != null)
+            {
+                user.RefreshToken = null;
+                user.RefreshTokenExpiryTime = DateTime.MinValue;
+                await _userRepository.UpdateAsync(user);
+            }
+        }
     }
 }
