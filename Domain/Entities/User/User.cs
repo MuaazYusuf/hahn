@@ -1,4 +1,5 @@
 using Domain.Base;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 
 namespace Domain.Entities.User
@@ -16,5 +17,12 @@ namespace Domain.Entities.User
         public bool IsActive { get; set; } = false;
         public string? RefreshToken { get; set; }
         public DateTime RefreshTokenExpiryTime { get; set; }
+        public int? CreatedById { get; set; }
+        [ForeignKey("CreatedById")]
+        public virtual User CreatedBy { get; set; }
+
+        public int? UpdatedById { get; set; }
+        [ForeignKey("UpdatedById")]
+        public virtual User UpdatedBy { get; set; }
     }
 }

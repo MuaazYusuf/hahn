@@ -7,6 +7,7 @@ using Application.DTOs;
 using Microsoft.Extensions.Localization;
 using Api.Resources;
 using Application.Helpers;
+using Api.Attributes;
 
 namespace Api.Controllers
 {
@@ -18,21 +19,25 @@ namespace Api.Controllers
 
         private readonly UserValidator _userValidator;
         private readonly IStringLocalizer<SharedResource> _SharedResource;
+        private readonly IHttpContextAccessor _httpContextAccessor;
         public UserController
         (
             ILogger<UserController> logger,
             IUserService service,
             UserValidator userValidator,
-            IStringLocalizer<SharedResource> SharedResource
+            IStringLocalizer<SharedResource> SharedResource,
+            IHttpContextAccessor httpContextAccessor
         )
         {
             _service = service;
             _logger = logger;
             _userValidator = userValidator;
-            this._SharedResource = SharedResource;
+            _SharedResource = SharedResource;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         [HttpGet("{id}")]
+        [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(BaseResponse<UserResponse>))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<JsonResult> GetById(int id)
@@ -52,11 +57,14 @@ namespace Api.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         // [SwaggerRequestExample(typeof(UserResponse))]
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(BaseResponse<UserResponse>))]
         [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
         public async Task<JsonResult> Add([FromBody] AddUserRequest request)
         {
+            var currentUser = (User?)_httpContextAccessor.HttpContext.Items["User"];
+            var currentUserData = await _service.GetByEmailAsync(currentUser.Email);
             var entity = new User()
             {
                 Email = request.Email,
@@ -65,7 +73,9 @@ namespace Api.Controllers
                 LastName = request.LastName,
                 Password =  PasswordHelper.Hash(request.Password),
                 PhoneNumber = request.PhoneNumber,
-                DateOfBirth = request.DateOfBirth
+                DateOfBirth = request.DateOfBirth,
+                CreatedById = currentUserData.Id,
+                CreatedBy = currentUserData
             };
             await _userValidator.ValidateAsync(entity);
             var user = await _service.AddAsync(entity);
@@ -88,12 +98,16 @@ namespace Api.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<JsonResult> Update(int id, [FromBody] UpdateUserRequest request)
         {
+            var currentUser = (User?)_httpContextAccessor.HttpContext.Items["User"];
+            var currentUserData = await _service.GetByEmailAsync(currentUser.Email);
             var user = await _service.GetByIdAsync(id);
             user.FirstName = request.FirstName;
             user.LastName = request.LastName;
             user.PhoneNumber = request.PhoneNumber;
             user.DateOfBirth = request.DateOfBirth;
             user.UpdatedAt = DateTime.Now;
+            user.UpdatedById = currentUserData?.Id;
+            user.UpdatedBy = currentUserData;
             var updatedUser = await _service.UpdateAsync(user);
             return this.response(new UserResponse()
             {
@@ -105,7 +119,7 @@ namespace Api.Controllers
                 DateOfBirth = updatedUser.DateOfBirth.ToShortDateString(),
                 PhoneNumber = updatedUser.PhoneNumber,
                 IsActive = updatedUser.IsActive,
-                UpdatedAt = (DateTime?)updatedUser.UpdatedAt
+                UpdatedAt = (DateTime?)updatedUser.UpdatedAt,
             }, StatusCodes.Status200OK, _SharedResource["Resource updated successfully"]);
         }
 
