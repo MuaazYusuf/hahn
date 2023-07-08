@@ -1,8 +1,8 @@
 namespace Domain.Entities.User
 {
-    public static class UserRoles
+    public enum Role
     {
-        public const string Admin = "admin";
-        public const string User = "user";
+        Admin,
+        User
     }
 }

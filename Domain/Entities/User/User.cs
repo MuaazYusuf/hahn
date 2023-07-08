@@ -24,5 +24,7 @@ namespace Domain.Entities.User
         public int? UpdatedById { get; set; }
         [ForeignKey("UpdatedById")]
         public virtual User UpdatedBy { get; set; }
+
+        public Role Role { get; set; }
     }
 }

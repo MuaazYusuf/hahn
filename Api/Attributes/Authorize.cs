@@ -7,6 +7,12 @@ using Domain.Entities.User;
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
 public class AuthorizeAttribute : Attribute, IAuthorizationFilter
 {
+    private readonly IList<Role> _roles;
+
+    public AuthorizeAttribute(params Role[] roles)
+    {
+        _roles = roles ?? new Role[] { };
+    }
     public void OnAuthorization(AuthorizationFilterContext context)
     {
         // skip authorization if action is decorated with [AllowAnonymous] attribute

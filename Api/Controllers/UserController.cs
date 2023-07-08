@@ -57,7 +57,7 @@ namespace Api.Controllers
         }
 
         [HttpPost]
-        [Authorize]
+        [Authorize(Role.Admin)]
         // [SwaggerRequestExample(typeof(UserResponse))]
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(BaseResponse<UserResponse>))]
         [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
@@ -93,6 +93,7 @@ namespace Api.Controllers
         }
 
         [HttpPut("{id}")]
+        [Authorize(Role.Admin)]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(BaseResponse<UserResponse>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -134,6 +135,7 @@ namespace Api.Controllers
         }
 
         [HttpGet]
+        [Authorize(Role.Admin)]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(BaseResponse<IEnumerable<UserResponse>>))]
         public async Task<JsonResult> GetAll()
         {

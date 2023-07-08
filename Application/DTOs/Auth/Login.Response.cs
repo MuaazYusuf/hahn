@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using Domain.Entities.User;
 
 namespace Application.DTOs.Auth
 {
@@ -10,5 +11,6 @@ namespace Application.DTOs.Auth
         public string LastName { get; set; }
         public string Token { get; set; }
         public string RefreshToken { get; set; }
+        public Role Role { get; set; }
     }
 }
