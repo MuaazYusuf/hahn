@@ -8,10 +8,6 @@ namespace Infrastructure.Data
     {
         public EFContext(DbContextOptions<EFContext> options) : base(options) { }
         public DbSet<User> Users { get; set; }
-
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        => optionsBuilder
-            .AddInterceptors(new SoftDeleteInterceptor());
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfiguration(new UserConfiguration());

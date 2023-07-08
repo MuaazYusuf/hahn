@@ -107,9 +107,9 @@ namespace Api.Controllers
             var newRefreshToken = _jwtUtils.GenerateRefreshToken();
             user.RefreshToken = newRefreshToken;
             await _userService.UpdateAsync(user);
-            return this.response(new Token
+            return this.response(new LoginResponse
             {
-                AccessToken = newAccessToken,
+                Token = newAccessToken,
                 RefreshToken = newRefreshToken
             }, StatusCodes.Status200OK, "Successfully refreshed token");
         }

@@ -32,7 +32,7 @@ builder.Services.Configure<RequestLocalizationOptions>(options =>
         .AddSupportedUICultures(supportedCultures);
 });
 var connectionString = builder.Configuration.GetConnectionString("DDDConnectionString");
-builder.Services.AddDbContextPool<EFContext>(options => options.UseSqlServer(connectionString));
+builder.Services.AddDbContextPool<EFContext>(options => options.UseSqlServer(connectionString).AddInterceptors(new SoftDeleteInterceptor()));
 
 builder.Services.AddScoped<IJwtUtils, JwtUtils>();
 builder.Services.AddScoped(typeof(IBaseAsyncRepository<,>), typeof(AsyncBaseRepository<,>))
