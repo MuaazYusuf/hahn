@@ -9,6 +9,8 @@ public static class ApiConstants
     public const string LoginRoute = "login";
     public const string RefreshTokenRoute = "refresh-token";
     public const string RevokeTokenRoute = "revoke";
+    public const string LogoutRoute = "logout";
+    public const string RegisterRoute = "register";
 
     public const string DEFAULT_CORS_POLICY = "default";
 }

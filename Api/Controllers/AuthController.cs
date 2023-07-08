@@ -9,7 +9,8 @@ using Microsoft.AspNetCore.Mvc;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using Domain.Entities.User;
-
+using Application.DTOs.Users;
+using Application.Validators;
 
 namespace Api.Controllers
 {
@@ -20,13 +21,21 @@ namespace Api.Controllers
         private readonly IConfiguration _configuration;
         private readonly IJwtUtils _jwtUtils;
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly UserValidator _userValidator;
 
-        public AuthController(IUserService userService, IConfiguration configuration, IJwtUtils jwtUtils, IHttpContextAccessor httpContextAccessor)
+        public AuthController(
+            IUserService userService,
+            IConfiguration configuration,
+            IJwtUtils jwtUtils,
+            IHttpContextAccessor httpContextAccessor,
+            UserValidator userValidator
+        )
         {
             _userService = userService;
             _configuration = configuration;
             _jwtUtils = jwtUtils;
             _httpContextAccessor = httpContextAccessor;
+            _userValidator = userValidator;
         }
 
         [HttpPost]
@@ -119,12 +128,43 @@ namespace Api.Controllers
         }
 
         [Authorize]
-        [HttpPost("logout")]
-        public async Task<IActionResult> Logout()
+        [HttpPost(ApiConstants.LogoutRoute)]
+        public async Task<JsonResult> Logout()
         {
             var currentUser = (User?)_httpContextAccessor?.HttpContext?.Items["User"];
             await _userService.LogoutAsync(currentUser?.Email);
             return this.response("", StatusCodes.Status200OK, "Successfully logged out");
+        }
+
+        [HttpPost(ApiConstants.RegisterRoute)]
+        [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(BaseResponse<UserResponse>))]
+        [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
+        [AllowAnonymous]
+        public async Task<JsonResult> Register([FromBody] AddUserRequest request)
+        {
+            var entity = new User()
+            {
+                Email = request.Email,
+                Username = request.Username,
+                FirstName = request.FirstName,
+                LastName = request.LastName,
+                Password = PasswordHelper.Hash(request.Password),
+                PhoneNumber = request.PhoneNumber,
+                DateOfBirth = request.DateOfBirth,
+            };
+            await _userValidator.ValidateAsync(entity);
+            var user = await _userService.AddAsync(entity);
+            return this.response(new UserResponse()
+            {
+                Id = user.Id,
+                Username = user.Username,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Email = user.Email,
+                DateOfBirth = user.DateOfBirth.ToShortDateString(),
+                PhoneNumber = user.PhoneNumber,
+                IsActive = user.IsActive
+            }, StatusCodes.Status201Created, "Registered successfully");
         }
     }
 }
