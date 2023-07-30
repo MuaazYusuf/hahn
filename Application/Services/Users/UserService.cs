@@ -1,6 +1,7 @@
-using Domain.Entities.User;
-using Domain.Users.Interfaces;
+using Domain.Entities;
 using Application.DBExceptions;
+using Domain.Interfaces.Users;
+
 namespace Application.Services.Users
 {
     public class UserService : BaseService<User, int>, IUserService

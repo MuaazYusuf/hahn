@@ -1,4 +1,4 @@
-using Domain.Entities.User;
+using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -24,6 +24,10 @@ namespace Infrastructure.Configurations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired(false);
             modelBuilder.HasQueryFilter(u => u.IsDeleted == false);
+            // User has many Properties (One-to-Many)
+            modelBuilder.HasMany(u => u.Properties)
+                .WithOne(p => p.User)
+                .HasForeignKey(p => p.UserId);
         }
     }
 }

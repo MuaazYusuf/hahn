@@ -8,7 +8,7 @@ using Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using Domain.Entities.User;
+using Domain.Entities;
 using Application.DTOs.Users;
 using Application.Validators;
 

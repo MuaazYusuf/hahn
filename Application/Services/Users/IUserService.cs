@@ -1,4 +1,4 @@
-using Domain.Entities.User;
+using Domain.Entities;
 using Application.Base;
 namespace Application.Services.Users
 {

@@ -2,7 +2,8 @@ namespace Api.Attributes;
 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
-using Domain.Entities.User;
+using Domain.Entities;
+using Domain.Enums.Users;
 
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
 public class AuthorizeAttribute : Attribute, IAuthorizationFilter

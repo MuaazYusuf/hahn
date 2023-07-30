@@ -1,6 +1,6 @@
-using Domain.Entities.User;
+using Domain.Entities;
 using Domain.Base;
-namespace Domain.Users.Interfaces
+namespace Domain.Interfaces.Users
 {
     public interface IUserRepository : IBaseAsyncRepository<User, int>
     {

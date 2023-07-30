@@ -1,5 +1,5 @@
 using FluentValidation;
-using Domain.Entities.User;
+using Domain.Entities;
 using Application.Base;
 using FluentValidation.Results;
 

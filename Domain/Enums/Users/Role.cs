@@ -1,4 +1,4 @@
-namespace Domain.Entities.User
+namespace Domain.Enums.Users
 {
     public enum Role
     {

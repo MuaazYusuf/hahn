@@ -1,7 +1,7 @@
-using Domain.Entities.User;
-using Domain.Users.Interfaces;
+using Domain.Entities;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using Domain.Interfaces.Users;
 
 namespace Infrastructure.Data.Repositories.Users
 {

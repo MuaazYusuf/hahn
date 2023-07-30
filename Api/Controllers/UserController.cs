@@ -1,13 +1,14 @@
 using Microsoft.AspNetCore.Mvc;
 using Application.Services.Users;
 using Application.DTOs.Users;
-using Domain.Entities.User;
+using Domain.Entities;
 using Application.Validators;
 using Application.DTOs;
 using Microsoft.Extensions.Localization;
 using Api.Resources;
 using Application.Helpers;
 using Api.Attributes;
+using Domain.Enums.Users;
 
 namespace Api.Controllers
 {

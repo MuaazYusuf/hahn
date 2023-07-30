@@ -3,7 +3,6 @@ using Infrastructure.Data.Repositories;
 using Infrastructure.Data.Repositories.Users;
 using Microsoft.EntityFrameworkCore;
 using Domain.Base;
-using Domain.Users.Interfaces;
 using Application.Services.Users;
 using Microsoft.OpenApi.Models;
 using Application.Base;
@@ -12,12 +11,15 @@ using Api.Extensions;
 using Application.Validators;
 using Domain.Constants;
 using Microsoft.AspNetCore.Mvc.Razor;
-
+using Domain.Interfaces.Users;
 using Api.Jwt;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using System.Text.Json.Serialization;
+using Application.Services.Properties;
+using Infrastructure.Data.Repositories.Properties;
+using Domain.Interfaces.Properties;
 
 var builder = WebApplication.CreateBuilder(args);
 ConfigurationManager configuration = builder.Configuration;
@@ -36,10 +38,12 @@ builder.Services.AddDbContextPool<EFContext>(options => options.UseSqlServer(con
 
 builder.Services.AddScoped<IJwtUtils, JwtUtils>();
 builder.Services.AddScoped(typeof(IBaseAsyncRepository<,>), typeof(AsyncBaseRepository<,>))
-                .AddScoped<IUserRepository, UserRepository>();
+                .AddScoped<IUserRepository, UserRepository>()
+                .AddScoped<IPropertyRepository, PropertyRepository>();
 
 builder.Services.AddScoped(typeof(IBaseService<,>), typeof(BaseService<,>))
-                .AddScoped<IUserService, UserService>();
+                .AddScoped<IUserService, UserService>()
+                .AddScoped<IPropertyService, PropertyService>();
 builder.Services.AddTransient<UserValidator>();
 
 builder.Services.AddCors(o => o.AddPolicy(ApiConstants.DEFAULT_CORS_POLICY, builder =>
@@ -60,7 +64,7 @@ builder.Services.AddSwaggerGen(options =>
               {
                   options.SwaggerDoc("v1", new OpenApiInfo()
                   {
-                      Title = "Hahn APIs",
+                      Title = "Servicify APIs",
                       Version = "V1",
                       Description = "Api",
                   });
