@@ -8,9 +8,9 @@ namespace Domain.Entities
     public class User : BaseEntity<int>
     {
         public string? Username { get; set; }
-        public string? Email { get; set; }
+        public string Email { get; set; }
         [JsonIgnore]
-        public string? Password { get; set; }
+        public string Password { get; set; }
         public string? FirstName { get; set; }
         public string? LastName { get; set; }
         public DateTime DateOfBirth { get; set; }
@@ -28,7 +28,8 @@ namespace Domain.Entities
 
         public Role Role { get; set; }
 
-        public List<ServiceRequest> ServiceRequests { get; set; } = new List<ServiceRequest>();
-        public List<Property> Properties { get; set; } = new List<Property>();
+        public virtual List<ServiceRequest> ServiceRequests { get; set; } = new List<ServiceRequest>();
+        public virtual List<Property> OwnedProperties { get; set; } = new List<Property>();
+        public virtual List<Property> CreatedProperties { get; set; } = new List<Property>();
     }
 }

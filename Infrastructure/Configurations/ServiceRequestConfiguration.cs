@@ -1,4 +1,5 @@
 using Domain.Entities;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Infrastructure.Configurations
@@ -11,16 +12,20 @@ namespace Infrastructure.Configurations
             // ServiceRequest has one User (One-to-Many)
             modelBuilder.HasOne(s => s.CreatedBy)
                 .WithMany(u => u.ServiceRequests)
-                .HasForeignKey(s => s.CreatedById);
+                .HasForeignKey(s => s.CreatedById)
+                .OnDelete(DeleteBehavior.NoAction);
 
             // ServiceRequest has one Property (One-to-Many)
             modelBuilder.HasOne(s => s.Property)
                 .WithMany(p => p.ServiceRequests)
-                .HasForeignKey(s => s.PropertyId);
+                .HasForeignKey(s => s.PropertyId)
+                .OnDelete(DeleteBehavior.NoAction);
             // Configure the relationship with Service (one-to-many)
             modelBuilder.HasOne(sr => sr.Service)
                 .WithMany(s => s.ServiceRequests)
-                .HasForeignKey(sr => sr.ServiceId);
+                .HasForeignKey(sr => sr.ServiceId)
+                .OnDelete(DeleteBehavior.NoAction);
+            modelBuilder.HasQueryFilter(u => u.IsDeleted == false);
         }
     }
 }

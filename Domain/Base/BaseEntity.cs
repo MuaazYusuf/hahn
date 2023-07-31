@@ -12,6 +12,7 @@ namespace Domain.Base
         public BaseEntity()
         {
             CreatedAt = DateTime.UtcNow;
+            UpdatedAt = DateTime.UtcNow;
         }
     }
 }

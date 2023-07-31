@@ -13,6 +13,7 @@ namespace Infrastructure.Configurations
             modelBuilder.Property(e => e.LastName).IsRequired().HasMaxLength(50);
             modelBuilder.Property(e => e.Email).IsRequired().HasMaxLength(255);
             modelBuilder.HasIndex(e => e.Email).IsUnique();
+            modelBuilder.Property(e => e.Password).IsRequired();
             modelBuilder.HasOne(u => u.CreatedBy)
                         .WithOne()
                         .HasForeignKey<User>(u => u.CreatedById)
@@ -25,9 +26,15 @@ namespace Infrastructure.Configurations
                         .IsRequired(false);
             modelBuilder.HasQueryFilter(u => u.IsDeleted == false);
             // User has many Properties (One-to-Many)
-            modelBuilder.HasMany(u => u.Properties)
-                .WithOne(p => p.User)
-                .HasForeignKey(p => p.UserId);
+            modelBuilder.HasMany(u => u.OwnedProperties)
+                .WithOne(p => p.Agent)
+                .HasForeignKey(p => p.AgentId)
+                .OnDelete(DeleteBehavior.NoAction);
+            // If an admin created it for agent
+            modelBuilder.HasMany(u => u.CreatedProperties)
+                .WithOne(p => p.CreatedBy)
+                .HasForeignKey(p => p.CreatedById)
+                .OnDelete(DeleteBehavior.NoAction);
         }
     }
 }

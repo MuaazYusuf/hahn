@@ -18,11 +18,12 @@ namespace Infrastructure.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfiguration(new UserConfiguration());
+            modelBuilder.ApplyConfiguration(new PointOfInterestConfiguration());
             modelBuilder.ApplyConfiguration(new PhotoConfiguration());
             modelBuilder.ApplyConfiguration(new PropertyConfiguration());
             modelBuilder.ApplyConfiguration(new PropertyPointOfInterestConfiguration());
             modelBuilder.ApplyConfiguration(new ServiceConfiguration());
-            modelBuilder.ApplyConfiguration(new ServiceRequestConfiguration());
+            modelBuilder.ApplyConfiguration(new ServiceRequestConfiguration());    
             base.OnModelCreating(modelBuilder);
         }
 

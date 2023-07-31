@@ -1,4 +1,5 @@
 using Domain.Entities;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Infrastructure.Configurations
@@ -19,6 +20,7 @@ namespace Infrastructure.Configurations
             modelBuilder.HasOne(pp => pp.PointOfInterest)
                 .WithMany(poi => poi.PropertyPointOfInterests)
                 .HasForeignKey(pp => pp.PointOfInterestId);
+            modelBuilder.HasQueryFilter(u => u.IsDeleted == false);
         }
     }
 }
