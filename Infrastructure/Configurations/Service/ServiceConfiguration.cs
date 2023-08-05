@@ -12,6 +12,8 @@ namespace Infrastructure.Configurations
             modelBuilder.HasMany(s => s.ServiceRequests)
                 .WithOne(sr => sr.Service)
                 .HasForeignKey(sr => sr.ServiceId);
+            
+            modelBuilder.HasQueryFilter(u => u.IsDeleted == false);
         }
     }
 }

@@ -14,6 +14,9 @@ namespace Infrastructure.Data
         public DbSet<Photo> Photos { get; set; }
         public DbSet<PropertyPointOfInterest> PropertyPointOfInterests { get; set; }
         public DbSet<Service> Service { get; set; }
+        public DbSet<ServiceProvider> ServiceProvider { get; set; }
+        public DbSet<Worker> Worker { get; set; }
+        public DbSet<Agent> Agent { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -23,7 +26,10 @@ namespace Infrastructure.Data
             modelBuilder.ApplyConfiguration(new PropertyConfiguration());
             modelBuilder.ApplyConfiguration(new PropertyPointOfInterestConfiguration());
             modelBuilder.ApplyConfiguration(new ServiceConfiguration());
-            modelBuilder.ApplyConfiguration(new ServiceRequestConfiguration());    
+            modelBuilder.ApplyConfiguration(new ServiceRequestConfiguration());
+            modelBuilder.ApplyConfiguration(new WorkerConfiguration());
+            modelBuilder.ApplyConfiguration(new AgentConfiguration());
+            modelBuilder.ApplyConfiguration(new ServiceProviderConfiguration());
             base.OnModelCreating(modelBuilder);
         }
 

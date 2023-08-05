@@ -142,13 +142,11 @@ namespace Api.Controllers
         [AllowAnonymous]
         public async Task<JsonResult> Register([FromBody] AddUserRequest request)
         {
-            var entity = new User()
+            var entity = new User(request.Email, PasswordHelper.Hash(request.Password))
             {
-                Email = request.Email,
                 Username = request.Username,
                 FirstName = request.FirstName,
                 LastName = request.LastName,
-                Password = PasswordHelper.Hash(request.Password),
                 PhoneNumber = request.PhoneNumber,
                 DateOfBirth = request.DateOfBirth,
             };
@@ -161,7 +159,7 @@ namespace Api.Controllers
                 FirstName = user.FirstName,
                 LastName = user.LastName,
                 Email = user.Email,
-                DateOfBirth = user.DateOfBirth.ToShortDateString(),
+                DateOfBirth = user.DateOfBirth.Value.ToShortDateString(),
                 PhoneNumber = user.PhoneNumber,
                 IsActive = user.IsActive
             }, StatusCodes.Status201Created, "Registered successfully");

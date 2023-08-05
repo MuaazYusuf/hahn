@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
+using Microsoft.EntityFrameworkCore.Storage;
 
 namespace Infrastructure.Data.Repositories
 {
@@ -44,6 +45,11 @@ namespace Infrastructure.Data.Repositories
         {
             entities.Remove(entity);
             return await _context.SaveChangesAsync();
+        }
+
+        public async Task<IDbContextTransaction> BeginTransactionAsync()
+        {
+            return await _context.Database.BeginTransactionAsync();
         }
     }
 }

@@ -11,6 +11,6 @@ namespace Application.DTOs.Auth
         public string LastName { get; set; }
         public string Token { get; set; }
         public string RefreshToken { get; set; }
-        public Role Role { get; set; }
+        public string Role { get; set; }
     }
 }

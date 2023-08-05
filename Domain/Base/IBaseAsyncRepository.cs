@@ -1,9 +1,11 @@
+using Microsoft.EntityFrameworkCore.Storage;
+
 namespace Domain.Base
 {
-    public interface IBaseAsyncRepository<TEntity, TId> where TEntity  : BaseEntity<TId>
+    public interface IBaseAsyncRepository<TEntity, TId> where TEntity : BaseEntity<TId>
     {
         Task<TEntity?> GetByIdAsync(TId id);
-        
+
         Task<TEntity> AddAsync(TEntity entity);
 
         Task<TEntity> UpdateAsync(TEntity entity);
@@ -11,5 +13,6 @@ namespace Domain.Base
         Task<int> DeleteAsync(TEntity entity);
 
         Task<IEnumerable<TEntity>> GetAllAsync();
+        Task<IDbContextTransaction> BeginTransactionAsync();
     }
 }

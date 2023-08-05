@@ -1,6 +1,7 @@
 using Application.Base;
 using Domain.Base;
 using Application.DBExceptions;
+using Microsoft.EntityFrameworkCore.Storage;
 
 namespace Application.Services
 {
@@ -32,12 +33,29 @@ namespace Application.Services
 
         public async Task<TEntity> UpdateAsync(TEntity entity)
         {
-            return await _repository.UpdateAsync(entity);
+            using (var transaction = await BeginTransactionAsync())
+            {
+                try
+                {
+                    var updatedEntity = await _repository.UpdateAsync(entity);
+                    transaction.Commit();
+                    return updatedEntity;
+                }
+                catch (Exception)
+                {
+                    transaction.Rollback();
+                    throw new Exception("Couldn't save changes");
+                }
+            }
         }
 
         public async Task<int> DeleteAsync(TEntity entity)
         {
             return await _repository.DeleteAsync(entity);
+        }
+        public async Task<IDbContextTransaction> BeginTransactionAsync()
+        {
+            return await _repository.BeginTransactionAsync();
         }
     }
 }

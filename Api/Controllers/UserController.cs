@@ -51,14 +51,14 @@ namespace Api.Controllers
                 FirstName = user.FirstName,
                 LastName = user.LastName,
                 Email = user.Email,
-                DateOfBirth = user.DateOfBirth.ToShortDateString(),
+                DateOfBirth = user.DateOfBirth.Value.ToShortDateString(),
                 PhoneNumber = user.PhoneNumber,
                 IsActive = user.IsActive
             }, StatusCodes.Status200OK, _SharedResource["DONE"]);
         }
 
         [HttpPost]
-        [Authorize(Role.Admin)]
+        [Authorize(RoleEnum.ADMIN)]
         // [SwaggerRequestExample(typeof(UserResponse))]
         [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(BaseResponse<UserResponse>))]
         [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
@@ -66,13 +66,11 @@ namespace Api.Controllers
         {
             var currentUser = (User?)_httpContextAccessor.HttpContext.Items["User"];
             var currentUserData = await _service.GetByEmailAsync(currentUser.Email);
-            var entity = new User()
+            var entity = new User(request.Email, PasswordHelper.Hash(request.Password))
             {
-                Email = request.Email,
                 Username = request.Username,
                 FirstName = request.FirstName,
                 LastName = request.LastName,
-                Password =  PasswordHelper.Hash(request.Password),
                 PhoneNumber = request.PhoneNumber,
                 DateOfBirth = request.DateOfBirth,
                 CreatedById = currentUserData.Id,
@@ -87,14 +85,14 @@ namespace Api.Controllers
                 FirstName = user.FirstName,
                 LastName = user.LastName,
                 Email = user.Email,
-                DateOfBirth = user.DateOfBirth.ToShortDateString(),
+                DateOfBirth = user.DateOfBirth.Value.ToShortDateString(),
                 PhoneNumber = user.PhoneNumber,
                 IsActive = user.IsActive
             }, StatusCodes.Status201Created, _SharedResource["Resource added successfully"]);
         }
 
         [HttpPut("{id}")]
-        [Authorize(Role.Admin)]
+        [Authorize(RoleEnum.ADMIN)]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(BaseResponse<UserResponse>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -118,7 +116,7 @@ namespace Api.Controllers
                 FirstName = updatedUser.FirstName,
                 LastName = updatedUser.LastName,
                 Email = user.Email,
-                DateOfBirth = updatedUser.DateOfBirth.ToShortDateString(),
+                DateOfBirth = updatedUser.DateOfBirth.Value.ToShortDateString(),
                 PhoneNumber = updatedUser.PhoneNumber,
                 IsActive = updatedUser.IsActive,
                 UpdatedAt = (DateTime?)updatedUser.UpdatedAt,
@@ -136,7 +134,7 @@ namespace Api.Controllers
         }
 
         [HttpGet]
-        [Authorize(Role.Admin)]
+        [Authorize(RoleEnum.ADMIN)]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(BaseResponse<IEnumerable<UserResponse>>))]
         public async Task<JsonResult> GetAll()
         {
@@ -148,7 +146,7 @@ namespace Api.Controllers
                 FirstName = u.FirstName,
                 LastName = u.LastName,
                 Email = u.Email,
-                DateOfBirth = u.DateOfBirth.ToShortDateString(),
+                DateOfBirth = u.DateOfBirth.Value.ToShortDateString(),
                 PhoneNumber = u.PhoneNumber,
                 IsActive = u.IsActive,
                 UpdatedAt = (DateTime?)u.UpdatedAt

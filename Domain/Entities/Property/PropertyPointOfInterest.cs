@@ -10,5 +10,17 @@ namespace Domain.Entities
 
         public int PointOfInterestId { get; set; }
         public PointOfInterest PointOfInterest { get; set; }
+
+        public void SetPointOfInterest(PointOfInterest pointOfInterest)
+        {
+            PointOfInterest = pointOfInterest;
+            PointOfInterestId = pointOfInterest.Id;
+        }
+
+        public void SetProperty(Property property)
+        {
+            Property = property;
+            PropertyId = property.Id;
+        }
     }
 }

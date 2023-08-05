@@ -8,11 +8,11 @@ using Domain.Enums.Users;
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
 public class AuthorizeAttribute : Attribute, IAuthorizationFilter
 {
-    private readonly IList<Role> _roles;
+    private readonly IList<string> _roles;
 
-    public AuthorizeAttribute(params Role[] roles)
+    public AuthorizeAttribute(params string[] roles)
     {
-        _roles = roles ?? new Role[] { };
+        _roles = roles ?? new string[] { };
     }
     public void OnAuthorization(AuthorizationFilterContext context)
     {

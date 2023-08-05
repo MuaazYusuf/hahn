@@ -2,16 +2,16 @@ using Domain.Base;
 
 namespace Domain.Entities
 {
-    public class Service : BaseEntity<int>
+    public class Worker : BaseEntity<int>
     {
-        public string Name { get; set; }
+        public virtual User User { get; set; }
+        public int UserId { get; set; }
+        public int ServiceProviderId { get; set; }
         public virtual ServiceProvider ServiceProvider { get; set; }
-        public virtual int ServiceProviderId { get; set; }
-        public List<ServiceRequest> ServiceRequests { get; set; } = new List<ServiceRequest>();
-
-        public Service(string name)
+        public void SetUser(User user)
         {
-            Name = name;
+            User = user;
+            UserId = user.Id;
         }
 
         public void SetServiceProvider(ServiceProvider serviceProvider)

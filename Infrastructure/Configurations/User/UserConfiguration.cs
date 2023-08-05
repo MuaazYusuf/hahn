@@ -25,15 +25,26 @@ namespace Infrastructure.Configurations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired(false);
             modelBuilder.HasQueryFilter(u => u.IsDeleted == false);
-            // User has many Properties (One-to-Many)
-            modelBuilder.HasMany(u => u.OwnedProperties)
-                .WithOne(p => p.Agent)
-                .HasForeignKey(p => p.AgentId)
-                .OnDelete(DeleteBehavior.NoAction);
+
             // If an admin created it for agent
             modelBuilder.HasMany(u => u.CreatedProperties)
                 .WithOne(p => p.CreatedBy)
                 .HasForeignKey(p => p.CreatedById)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.HasOne(u => u.Agent)
+                .WithOne(a => a.User)
+                .HasForeignKey<Agent>(a => a.UserId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.HasOne(u => u.ServiceProvider)
+                .WithOne(sp => sp.User)
+                .HasForeignKey<ServiceProvider>(sp => sp.UserId)
+                .OnDelete(DeleteBehavior.NoAction);
+            
+            modelBuilder.HasOne(u => u.Worker)
+                .WithOne(w => w.User)
+                .HasForeignKey<Worker>(w => w.UserId)
                 .OnDelete(DeleteBehavior.NoAction);
         }
     }
